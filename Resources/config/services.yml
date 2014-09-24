@@ -1,0 +1,12 @@
+parameters:
+
+    ezperformancelogger.kernel_event_listener.class: GGGeek\eZPerformanceLoggerBundle\EventListener\PerfLogger
+
+services:
+
+    ezperformancelogger.kernel_event_listener:
+        class: %ezperformancelogger.kernel_event_listener.class%
+        # add a 2nd parameter with a value of 1 if the loggers set up in ezperformancelogger.ini need to rewrite output
+        arguments: [ @ezpublish_legacy.kernel, 1 ]
+        tags:
+            - { name: kernel.event_subscriber }

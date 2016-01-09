@@ -1,7 +1,7 @@
 <?php
 /**
  * @author G. Giunta
- * @copyright (C) eZ Systems AS 2014
+ * @copyright (C) eZ Systems AS 2014-2016
  * @license Licensed under GNU General Public License v2.0. See file license.txt
  */
 
@@ -28,7 +28,7 @@ class PerfLogger implements EventSubscriberInterface
      * @param bool $needsResponseRewrite Ideally we should figure this out from ezperformancelogger inis, but it would
      *                                   be too complicated, so we allow the developer to tell us
      */
-    public function __construct( \Closure $legacyKernelClosure, $needsResponseRewrite = false )
+    public function __construct(\Closure $legacyKernelClosure, $needsResponseRewrite = false)
     {
         $this->legacyKernelClosure = $legacyKernelClosure;
         $this->needsResponseRewrite = $needsResponseRewrite;
@@ -52,42 +52,42 @@ class PerfLogger implements EventSubscriberInterface
      *
      * @param $event
      */
-    public function onTerminate( PostResponseEvent $event )
+    public function onTerminate(PostResponseEvent $event)
     {
         // small speed gain: avoid useless callback if measurement was already done
-        if ( $this->hasRun )
+        if ($this->hasRun)
             return;
 
         $response = $event->getResponse();
         $legacyKernelClosure = $this->legacyKernelClosure;
         $legacyKernel = $legacyKernelClosure();
-        $legacyKernel->runCallback( function() use ( $response ) {
-            eZPerfLogger::cleanup( $response->getContent(), $response->getStatusCode() );
-        } );
+        $legacyKernel->runCallback(function() use($response) {
+            eZPerfLogger::cleanup($response->getContent(), $response->getStatusCode());
+        });
         $this->hasRun = true;
     }
 
     /**
      * If needed, executes the ezperformancelogger logging on the Symfony Filter-Response event, so we can modify it
      */
-    public function onFilterResponse( FilterResponseEvent $event )
+    public function onFilterResponse(FilterResponseEvent $event)
     {
-        if ( $event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST )
+        if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST)
             return;
 
-        if ( !$this->needsResponseRewrite )
+        if (!$this->needsResponseRewrite)
             return;
 
         $response = $event->getResponse();
         $legacyKernelClosure = $this->legacyKernelClosure;
         $legacyKernel = $legacyKernelClosure();
-        $legacyKernel->runCallback( function() use ( $response ) {
-            if ( eZPerfLogger::isEnabled() )
+        $legacyKernel->runCallback(function() use($response) {
+            if (eZPerfLogger::isEnabled())
             {
-                $content = eZPerfLogger::preoutput( $response->getContent(), $response->getStatusCode() );
-                $response->setContent( $content );
+                $content = eZPerfLogger::preoutput($response->getContent(), $response->getStatusCode());
+                $response->setContent($content);
             }
-        } );
+        });
         $this->hasRun = true;
     }
 }

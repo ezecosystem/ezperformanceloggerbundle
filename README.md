@@ -13,6 +13,10 @@ This has the nice benefit of keeping compatibility with pure-legacy and mixed-mo
 Installation of both this bundle and the associated extension is normally handled through composer - the developer has
 almost nothing to do - for some definition of 'almost nothing' ;-)
 
+1. composer require gggeek/ezperformanceloggerbundle
+
+2. add to ezpublishkernel.php the loading of the GGGeekEZPerformanceLoggerBundle
+
 !! IMPORTANT !!
 
 Once you have installed this bundle, make sure ypu read the INSTALL_5x document found inside

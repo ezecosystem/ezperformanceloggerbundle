@@ -12,6 +12,10 @@ This has the nice benefit of keeping compatibility with pure-legacy and mixed-mo
 
 NB: if you have an eZ Publish 5 installation which runs in "pure legacy" mode, you should *NOT* use this bundle.
 
+NB: this bundle for the moment allows to report only KPIs measuring on Legacy Stack activity; it does not measure activity
+related to the Symfony stack.
+
+
 Installation instructions
 -------------------------
 

@@ -61,9 +61,12 @@ class PerfLogger implements EventSubscriberInterface
         $response = $event->getResponse();
         $legacyKernelClosure = $this->legacyKernelClosure;
         $legacyKernel = $legacyKernelClosure();
-        $legacyKernel->runCallback(function() use($response) {
-            eZPerfLogger::cleanup($response->getContent(), $response->getStatusCode());
-        });
+        // accommodate for treemenu kernel not allowing runCallback
+        try {
+            $legacyKernel->runCallback(function() use($response) {
+                eZPerfLogger::cleanup($response->getContent(), $response->getStatusCode());
+            });
+        } catch( \RuntimeException $e ) {}
         $this->hasRun = true;
     }
 
@@ -81,13 +84,16 @@ class PerfLogger implements EventSubscriberInterface
         $response = $event->getResponse();
         $legacyKernelClosure = $this->legacyKernelClosure;
         $legacyKernel = $legacyKernelClosure();
-        $legacyKernel->runCallback(function() use($response) {
-            if (eZPerfLogger::isEnabled())
-            {
-                $content = eZPerfLogger::preoutput($response->getContent(), $response->getStatusCode());
-                $response->setContent($content);
-            }
-        });
+        // accommodate for treemenu kernel not allowing runCallback
+        try {
+            $legacyKernel->runCallback(function() use($response) {
+                if (eZPerfLogger::isEnabled())
+                {
+                    $content = eZPerfLogger::preoutput($response->getContent(), $response->getStatusCode());
+                    $response->setContent($content);
+                }
+            });
+        } catch( \RuntimeException $e ) {}
         $this->hasRun = true;
     }
 }
